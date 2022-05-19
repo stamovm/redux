@@ -4,17 +4,18 @@ import CartContainer from './components/CartContainer'
 import cartItems from './cart-items'
 
 import { createStore } from 'redux'
+import reducer from './reducer'
+import { INCREASE, DECREASE, REMOVE, GET_AMOUNT, GET_TOTAL } from './actions'
 
 const initStore = {
   count: 3,
-}
-
-function reducer(state, action) {
-  console.log('reducer', state, action)
-  return state
+  name: 'Jack',
 }
 
 const store = createStore(reducer, initStore)
+store.dispatch({ type: DECREASE })
+store.dispatch({ type: INCREASE })
+store.dispatch({ type: INCREASE })
 console.log(store.getState())
 
 function App() {
