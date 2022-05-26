@@ -1,4 +1,4 @@
-import { INCREASE, DECREASE, CLEAR_CART, REMOVE } from './actions'
+import { INCREASE, DECREASE, CLEAR_CART, REMOVE, GET_TOTALS } from './actions'
 
 function reducer(state, action) {
   if (action.type === CLEAR_CART) {
@@ -48,6 +48,17 @@ function reducer(state, action) {
     }
   }
 
+  if (action.type === GET_TOTALS) {
+    let total = 0
+    state.cart.forEach((item) => {
+      total += item.amount * item.price
+    })
+    total = parseFloat(total.toFixed(2))
+    return {
+      ...state,
+      total,
+    }
+  }
   return state
 }
 export default reducer
