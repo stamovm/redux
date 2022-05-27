@@ -1,6 +1,13 @@
-import { INCREASE, DECREASE, CLEAR_CART, REMOVE, GET_TOTALS } from './actions'
+import { CLEAR_CART, REMOVE, GET_TOTALS, TOGGLE_AMOUNT } from './actions'
+import cartItems from './cart-items'
 
-function reducer(state, action) {
+const initStore = {
+  cart: cartItems,
+  total: 3,
+  amount: 5,
+}
+
+function reducer(state = initStore, action) {
   if (action.type === CLEAR_CART) {
     console.log('Reducer CLEAR_CART executed: ', { state, action })
     return {
@@ -9,38 +16,6 @@ function reducer(state, action) {
     }
   }
 
-  if (action.type === INCREASE) {
-    let tempCart = state.cart.map((cartItem) => {
-      if (cartItem.id === action.payload.id) {
-        cartItem = { ...cartItem, amount: cartItem.amount + 1 }
-      }
-      return cartItem
-    })
-    return {
-      ...state,
-      cart: tempCart,
-    }
-  }
-  if (action.type === DECREASE) {
-    let tempCart = []
-    if (action.payload.amount === 1) {
-      tempCart = state.cart.filter(
-        (cartItem) => cartItem.id !== action.payload.id
-      )
-      console.log('Reducer DECREASE = 1 executed: ', tempCart)
-    } else {
-      tempCart = state.cart.map((cartItem) => {
-        if (cartItem.id === action.payload.id) {
-          cartItem = { ...cartItem, amount: cartItem.amount - 1 }
-        }
-        return cartItem
-      })
-    }
-    return {
-      ...state,
-      cart: tempCart,
-    }
-  }
   if (action.type === REMOVE) {
     return {
       ...state,
@@ -50,13 +25,34 @@ function reducer(state, action) {
 
   if (action.type === GET_TOTALS) {
     let total = 0
+    let amount = 0
     state.cart.forEach((item) => {
       total += item.amount * item.price
+      amount += item.amount
     })
     total = parseFloat(total.toFixed(2))
     return {
       ...state,
       total,
+      amount,
+    }
+  }
+
+  if (action.type === TOGGLE_AMOUNT) {
+    console.log('Reducer TOGGLE_AMOUNT executed: ', { state, action })
+    return {
+      ...state,
+      cart: state.cart.map((cartItem) => {
+        if (cartItem.id === action.payload.id) {
+          if (action.payload.toggle === 'inc') {
+            return (cartItem = { ...cartItem, amount: cartItem.amount + 1 })
+          }
+          if (action.payload.toggle === 'dec') {
+            return (cartItem = { ...cartItem, amount: cartItem.amount - 1 })
+          }
+        }
+        return cartItem
+      }),
     }
   }
   return state
